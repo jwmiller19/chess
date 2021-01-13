@@ -1,6 +1,7 @@
 require_relative "slideable_piece"
 require_relative "stepable_piece"
 require_relative "null_piece"
+require_relative "pawn"
 
 class Board
   attr_reader :rows
@@ -37,15 +38,29 @@ class Board
   private
 
   def setup
-    [0, 1].each do |row|
-      (0..7).each { |col| rows[row] << King.new(:black, self, [row, col]) }
-    end
+    rows[0] << Rook.new(:black, self, [0, 0])
+    rows[0] << Knight.new(:black, self, [0, 1])
+    rows[0] << Bishop.new(:black, self, [0, 2])
+    rows[0] << Queen.new(:black, self, [0, 3])
+    rows[0] << King.new(:black, self, [0, 4])
+    rows[0] << Bishop.new(:black, self, [0, 5])
+    rows[0] << Knight.new(:black, self, [0, 6])
+    rows[0] << Rook.new(:black, self, [0, 7])
+
+    (0..7).each { |col| rows[1] << Pawn.new(:black, self, [1, col]) }
 
     (2..5).each { |row| rows[row] = [NullPiece.instance] * 8 }
 
-    [6, 7].each do |row|
-      (0..7).each { |col| rows[row] << King.new(:white, self, [row, col]) }
-    end
+    (0..7).each { |col| rows[6] << Pawn.new(:white, self, [6, col]) }
+
+    rows[7] << Rook.new(:white, self, [7, 0])
+    rows[7] << Knight.new(:white, self, [7, 1])
+    rows[7] << Bishop.new(:white, self, [7, 2])
+    rows[7] << Queen.new(:white, self, [7, 3])
+    rows[7] << King.new(:white, self, [7, 4])
+    rows[7] << Bishop.new(:white, self, [7, 5])
+    rows[7] << Knight.new(:white, self, [7, 6])
+    rows[7] << Rook.new(:white, self, [7, 7])
   end
 
 end
