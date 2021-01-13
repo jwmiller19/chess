@@ -1,10 +1,11 @@
-require_relative "piece"
+require_relative "slideable_piece"
 
 class Board
   attr_reader :rows
 
   def initialize
-    @rows = Board.setup
+    @rows = Array.new(8) { [] }
+    setup
   end
 
   def [](pos)
@@ -20,8 +21,11 @@ class Board
   def move_piece(start_pos, end_pos)
     if self[start_pos].nil?
       raise ArgumentError.new "There is no piece to move at #{start_pos}"
-    elsif self[end_pos]
-      raise ArgumentError.new "There is already a piece at #{end_pos}"
+    elsif end_pos.any? { |x| !x.between?(0, 7) }
+      raise ArgumentError.new "#{end_pos} is out of bounds"
+    elsif self[end_pos] && self[start_pos].color == self[end_pos].color
+      message = "#{start_pos} and #{end_pos} contain the same color pieces"
+      raise ArgumentError.new message
     end
 
     self[end_pos], self[start_pos] = self[start_pos], nil
@@ -30,16 +34,16 @@ class Board
 
   private
 
-  def self.setup
-    grid = Array.new(8) { [] }
-
-    [0, 1, 6, 7].each do |row|
-      (0..7).each { |col| grid[row] << Piece.new([row, col]) }
+  def setup
+    [0, 1].each do |row|
+      (0..7).each { |col| rows[row] << Piece.new(:black, self, [row, col]) }
     end
 
-    (2..5).each { |row| grid[row] = [nil] * 8 }
+    (2..5).each { |row| rows[row] = [nil] * 8 }
 
-    grid
+    [6, 7].each do |row|
+      (0..7).each { |col| rows[row] << Piece.new(:white, self, [row, col]) }
+    end
   end
 
 end
