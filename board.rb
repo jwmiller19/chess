@@ -25,7 +25,7 @@ class Board
       raise ArgumentError.new "There is no piece to move at #{start_pos}"
     elsif end_pos.any? { |x| !x.between?(0, 7) }
       raise ArgumentError.new "#{end_pos} is out of bounds"
-    elsif self[end_pos] && self[start_pos].color == self[end_pos].color
+    elsif self[start_pos].color == self[end_pos].color
       message = "#{start_pos} and #{end_pos} contain the same color pieces"
       raise ArgumentError.new message
     end

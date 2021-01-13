@@ -41,7 +41,7 @@ module Slideable
   def blocked?(move_pos, path)
     move_index = path.index(move_pos)
 
-    (board[move_pos] && board[move_pos].color == color) ||
+    board[move_pos].color == color ||
       path[0...move_index].any? { |path_pos| board[path_pos] }
   end
 
