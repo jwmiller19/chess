@@ -1,4 +1,5 @@
 require_relative "slideable_piece"
+require_relative "stepable_piece"
 
 class Board
   attr_reader :rows
@@ -36,13 +37,13 @@ class Board
 
   def setup
     [0, 1].each do |row|
-      (0..7).each { |col| rows[row] << Piece.new(:black, self, [row, col]) }
+      (0..7).each { |col| rows[row] << King.new(:black, self, [row, col]) }
     end
 
     (2..5).each { |row| rows[row] = [nil] * 8 }
 
     [6, 7].each do |row|
-      (0..7).each { |col| rows[row] << Piece.new(:white, self, [row, col]) }
+      (0..7).each { |col| rows[row] << King.new(:white, self, [row, col]) }
     end
   end
 
