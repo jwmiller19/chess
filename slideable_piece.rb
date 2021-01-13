@@ -42,7 +42,7 @@ module Slideable
     move_index = path.index(move_pos)
 
     board[move_pos].color == color ||
-      path[0...move_index].any? { |path_pos| board[path_pos] }
+      path[0...move_index].any? { |path_pos| !board[path_pos].is_a?(NullPiece) }
   end
 
   def moves
