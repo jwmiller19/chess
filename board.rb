@@ -22,6 +22,44 @@ class Board
     @rows[row][col] = val
   end
 
+  def dup
+    new_board = Board.new
+
+    @rows.each_index do |row|
+      @rows.each_index do |col|
+        pos = [row, col]
+        piece = self[pos]
+
+        if piece.is_a?(NullPiece)
+          new_board.add_piece(@null_piece, pos)
+        else
+          new_piece = piece.class.new(piece.color, new_board, pos)
+          new_board.add_piece(new_piece, pos)
+        end
+      end
+    end
+
+    new_board
+  end
+
+  def add_piece(piece, pos)
+    self[pos] = piece
+  end
+
+  def move_piece!(start_pos, end_pos)
+    if self[start_pos].is_a?(NullPiece)
+      raise ArgumentError.new "There is no piece to move at #{start_pos}"
+    elsif !valid_pos?(end_pos)
+      raise ArgumentError.new "#{end_pos} is out of bounds"
+    elsif self[start_pos].color == self[end_pos].color
+      message = "#{start_pos} and #{end_pos} contain the same color pieces"
+      raise ArgumentError.new message
+    end
+
+    self[end_pos], self[start_pos] = self[start_pos], @null_piece
+    self[end_pos].pos = end_pos
+  end
+
   def move_piece(start_pos, end_pos)
     if self[start_pos].is_a?(NullPiece)
       raise ArgumentError.new "There is no piece to move at #{start_pos}"
@@ -31,6 +69,9 @@ class Board
       message = "#{start_pos} and #{end_pos} contain the same color pieces"
       raise ArgumentError.new message
     end
+
+    message = "That move will leave you in check!"
+    raise message unless self[start_pos].valid_moves.include?(end_pos)
 
     self[end_pos], self[start_pos] = self[start_pos], @null_piece
     self[end_pos].pos = end_pos
