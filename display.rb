@@ -3,8 +3,10 @@ require_relative "board"
 require_relative "cursor"
 
 class Display
-  def initialize
-    @board = Board.new
+  attr_reader :board, :cursor
+
+  def initialize(board)
+    @board = board
     @cursor = Cursor.new([0,0], @board)
   end
 
@@ -32,14 +34,6 @@ class Display
       " #{colored_piece} ".on_light_red
     else
       " #{colored_piece} ".on_red
-    end
-  end
-
-  def cursor_test
-    loop do
-      system("clear")
-      render
-      @cursor.get_input
     end
   end
 end

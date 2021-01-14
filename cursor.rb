@@ -95,6 +95,7 @@ class Cursor
     new_pos = [row + row_diff, col + col_diff]
 
     @cursor_pos = new_pos if board.valid_pos?(new_pos)
+    nil
   end
 
   def toggle_selected

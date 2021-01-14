@@ -70,7 +70,7 @@ class Board
       raise ArgumentError.new message
     end
 
-    message = "That move will leave you in check!"
+    message = "That's not a valid move!"
     raise message unless self[start_pos].valid_moves.include?(end_pos)
 
     self[end_pos], self[start_pos] = self[start_pos], @null_piece
@@ -106,7 +106,13 @@ class Board
   def checkmate?(color)
     return false unless in_check?(color)
 
-    rows.all? { |row| row.all? { |piece| piece.valid_moves.empty? } }
+    rows.each do |row|
+      row.each do |piece|
+        return false if piece.color == color && !piece.valid_moves.empty?
+      end
+    end
+
+    true
   end
 
   private
