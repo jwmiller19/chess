@@ -24,7 +24,7 @@ class Board
   def move_piece(start_pos, end_pos)
     if self[start_pos].is_a?(NullPiece)
       raise ArgumentError.new "There is no piece to move at #{start_pos}"
-    elsif end_pos.any? { |x| !x.between?(0, 7) }
+    elsif !valid_pos?(end_pos)
       raise ArgumentError.new "#{end_pos} is out of bounds"
     elsif self[start_pos].color == self[end_pos].color
       message = "#{start_pos} and #{end_pos} contain the same color pieces"
@@ -33,6 +33,10 @@ class Board
 
     self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
     self[end_pos].pos = end_pos
+  end
+
+  def valid_pos?(pos)
+    pos.all? { |x| x.between?(0, 7) }
   end
 
   private
