@@ -8,6 +8,7 @@ class Board
 
   def initialize
     @rows = Array.new(8) { [] }
+    @null_piece = NullPiece.instance
     setup
   end
 
@@ -31,12 +32,40 @@ class Board
       raise ArgumentError.new message
     end
 
-    self[end_pos], self[start_pos] = self[start_pos], NullPiece.instance
+    self[end_pos], self[start_pos] = self[start_pos], @null_piece
     self[end_pos].pos = end_pos
   end
 
   def valid_pos?(pos)
     pos.all? { |x| x.between?(0, 7) }
+  end
+
+  def in_check?(color)
+    own_king_pos = find_king(color)
+
+    rows.each do |row|
+      row.each do |piece|
+        next unless piece.color && piece.color != color
+
+        return true if piece.moves.include?(own_king_pos)
+      end
+    end
+
+    false
+  end
+
+  def find_king(color)
+    rows.each do |row|
+      row.each do |piece|
+        return piece.pos if piece.is_a?(King) && piece.color == color
+      end
+    end
+  end
+
+  def checkmate?(color)
+    return false unless in_check?(color)
+
+    rows.all? { |row| row.all? { |piece| piece.valid_moves.empty? } }
   end
 
   private
@@ -53,7 +82,7 @@ class Board
 
     (0..7).each { |col| rows[1] << Pawn.new(:black, self, [1, col]) }
 
-    (2..5).each { |row| rows[row] = [NullPiece.instance] * 8 }
+    (2..5).each { |row| rows[row] = [@null_piece] * 8 }
 
     (0..7).each { |col| rows[6] << Pawn.new(:white, self, [6, col]) }
 
